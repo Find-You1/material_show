@@ -1,0 +1,166 @@
+// ============================================================
+// 设计令牌（SCSS 变量 / mixin 层）
+// 本文件被 vite 的 additionalData 注入到每个 .scss / <style lang="scss">，
+// 因此**只能放变量与 mixin**，绝不能出现任何会产出 CSS 的规则，否则每个
+// 组件都会重复输出一遍。
+// 对应的 CSS 自定义属性（--xxx）统一在 base.scss 的 :root 里声明一次。
+//
+// 色板：Apple 官网式浅色 —— 近白页面 + 纯白卡片 + 石墨文字 + 单一苹果蓝。
+// 大字留白、克制的发丝边、极淡阴影；没有渐变字、没有彩色光晕。
+// ============================================================
+
+// ---------- 字体 ----------
+// 优先系统 SF（macOS / iOS 原生），Windows 上回落到 Inter（最接近 SF 的开源字体）。
+$font-sans: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter',
+  'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei',
+  'Helvetica Neue', Arial, sans-serif;
+$font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', monospace;
+
+// ---------- 色板：Apple 浅色 ----------
+$color-primary: #0071e3; // 主色：苹果蓝
+$color-primary-dark: #005bb5; // 主色深（按下 / 悬停）
+$color-primary-soft: #eef5fe; // 主色的浅色填充（light-9）
+
+$color-accent: #2997ff; // 强调：亮蓝（只在悬停 / 选中 / 聚焦出现）
+
+$color-text: #1d1d1f;
+$color-text-secondary: #6e6e73;
+$color-text-muted: #86868b;
+
+$color-bg-page: #fbfbfd;
+$color-bg-card: #ffffff;
+$color-bg-hover: #f5f5f7;
+$color-bg-sunken: #f5f5f7;
+
+$color-border: #e5e5ea;
+$color-border-strong: #d2d2d7;
+
+// 沉浸式页面（图片详情）用的纯黑，方便照片跳出屏幕
+$color-ink: #000000;
+$color-ink-soft: #111113;
+
+// ---------- 电影感深色段（首页 hero / 深色叙事带）----------
+// 浅色体系负责「阅读」，深色段负责「开场」。两者交替出现，像 Apple 产品页的
+// dark / light 章节切换：黑场铺满首屏，白场承载列表，收尾再回到黑场。
+$color-bg-cinema: #000000;
+$color-bg-cinema-soft: #0b0b0d;
+$color-text-on-dark: #f5f5f7;
+$color-text-on-dark-soft: rgba(245, 245, 247, 0.72);
+$color-border-on-dark: rgba(255, 255, 255, 0.14);
+
+// 语义色用 Apple 系统色在浅底上的可读版本
+$color-success: #248a3d;
+$color-warning: #b35309;
+$color-danger: #d70015;
+$color-info: #86868b;
+
+// 发光：浅色体系里只留一圈极淡的中性描边
+$color-glow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+
+// ---------- 尺寸 ----------
+$navbar-height: 48px;
+$container-max: 1440px;
+$radius-card: 18px;
+$radius-base: 12px;
+$radius-sm: 8px;
+
+$gap-grid: 16px;
+$col-min-width: 240px;
+
+$form-narrow: 520px;
+$form-upload: 640px;
+$list-wide: 1200px;
+
+// ---------- 阴影 ----------
+// 浅底靠「极淡的多层投影」立起结构，越大的面越柔，绝不做发光。
+$shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+$shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.06), 0 18px 40px -12px rgba(0, 0, 0, 0.16);
+$shadow-navbar: 0 1px 0 rgba(0, 0, 0, 0.06);
+$shadow-pop: 0 20px 48px -16px rgba(0, 0, 0, 0.18);
+
+// ---------- 层级 ----------
+$z-navbar: 100;
+$z-overlay: 200;
+
+// ---------- breakpoint ----------
+$bp-sm: 640px;
+$bp-md: 900px;
+$bp-lg: 1200px;
+
+// ============================================================
+// mixin
+// ============================================================
+
+// 单行省略
+@mixin ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 多行省略
+@mixin ellipsis-multi($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// 卡片质感：白面 + 发丝边 + 极淡投影 + hover 抬升
+@mixin card-surface {
+  background: $color-bg-card;
+  border: 1px solid $color-border;
+  border-radius: $radius-card;
+  box-shadow: $shadow-card;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.3s ease;
+}
+
+@mixin card-hover {
+  transform: translateY(-3px);
+  box-shadow: $shadow-hover;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+// 键盘可达性：只在键盘聚焦时出现，鼠标点击不打扰
+@mixin focus-ring($color: rgba(0, 113, 227, 0.5)) {
+  outline: 2px solid $color;
+  outline-offset: 2px;
+}
+
+// 窄表单居中
+@mixin form-narrow($width: $form-narrow) {
+  width: 100%;
+  max-width: $width;
+  margin-inline: auto;
+}
+
+// 筛选词一行均匀分布（禁止 flex + flex-start）
+@mixin filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+
+// 半透明毛玻璃面板（Apple 浅色版）。
+// 近白页面上的白玻璃：72% 白 + 大模糊 + 一圈发丝边，正文仍是石墨色，对比度天然够。
+@mixin panel-glass($alpha: 0.72) {
+  background: rgba(255, 255, 255, $alpha);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: $radius-card;
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+
+  // 不支持 backdrop-filter 时退回近实白：宁可失去通透，也不能让正文糊掉
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: rgba(255, 255, 255, 0.96);
+  }
+}
+
+@mixin respond($bp) {
+  @media (max-width: $bp) {
+    @content;
+  }
+}

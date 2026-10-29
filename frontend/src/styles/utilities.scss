@@ -1,0 +1,152 @@
+// ============================================================
+// 通用工具类：宽度约束、文本层次、间距、卡片
+// 只在 main.js 里 import 一次。
+// ============================================================
+
+// ---------- 宽度约束（表单比列表窄且居中）----------
+.form-narrow {
+  @include form-narrow($form-narrow);
+}
+
+// 上传页字段更多，稍宽一点
+.form-upload {
+  @include form-narrow($form-upload);
+}
+
+.list-wide {
+  @include form-narrow($list-wide);
+}
+
+// ---------- 文本层次 ----------
+.u-text {
+  color: var(--color-text);
+}
+
+.u-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.u-text-muted {
+  color: var(--color-text-muted);
+}
+
+.u-text-primary {
+  color: var(--color-primary);
+}
+
+.u-text-danger {
+  color: var(--color-danger);
+}
+
+// 数值：600 / 15px / 主色；说明：12px / 次要色
+.u-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary);
+  line-height: 1.3;
+}
+
+.u-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.u-mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+}
+
+.u-ellipsis {
+  @include ellipsis;
+}
+
+.u-clamp-2 {
+  @include ellipsis-multi(2);
+}
+
+// ---------- 布局辅助 ----------
+.u-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.u-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.u-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.u-spacer {
+  flex: 1 1 auto;
+}
+
+.u-wrap {
+  flex-wrap: wrap;
+}
+
+// 筛选条：一行均匀分布（禁止 flex + flex-start）
+.u-filter-grid {
+  @include filter-grid;
+}
+
+// ---------- 卡片 ----------
+.u-card {
+  @include card-surface;
+}
+
+// 通用玻璃面板：收敛各页复制的 `.panel`（后台 6 页 + 个人中心 5 页），
+// 冷灰墨版（冷灰底 + 发丝白描边 + 模糊）。各页只保留自己的 padding。
+.u-panel {
+  @include panel-glass;
+}
+
+.u-card--hover:hover {
+  @include card-hover;
+}
+
+.u-card--flat {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+// ---------- 分区标题 ----------
+.u-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+
+  &::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    // 纯色金细条，无渐变无发光（渐变条是「AI 感」的来源之一）
+    background: var(--color-primary);
+  }
+}
+
+// ---------- 间距 ----------
+.u-mt-8 { margin-top: 8px; }
+.u-mt-12 { margin-top: 12px; }
+.u-mt-16 { margin-top: 16px; }
+.u-mt-24 { margin-top: 24px; }
+.u-mb-8 { margin-bottom: 8px; }
+.u-mb-12 { margin-bottom: 12px; }
+.u-mb-16 { margin-bottom: 16px; }
+.u-mb-24 { margin-bottom: 24px; }
+
+.u-page {
+  padding-block: 24px 48px;
+}

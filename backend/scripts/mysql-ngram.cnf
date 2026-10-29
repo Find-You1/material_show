@@ -1,0 +1,30 @@
+# 中文全文检索（ngram）专用参数。装 MySQL 时一起放进去，否则中文搜不出来。
+#
+# 为什么必须关停用词：
+#   MySQL 的 ngram 分词器默认会过滤 stopword 词表，中文一旦命中就整段搜不到，
+#   表现为「英文关键词有结果、中文关键词永远为空」。
+#   项目的图片检索依赖 images 上的 ft_images_search 全文索引（WITH PARSER ngram，
+#   见 alembic 初始迁移），search_service 里虽然对零结果回退 LIKE，
+#   但 LIKE 是全表扫描，量一大就顶不住。
+#
+# 放置位置（按发行版选，文件名随意，conf.d 里的 *.cnf 都会加载）：
+#   Alibaba Cloud Linux 3 / CentOS / RHEL : /etc/my.cnf.d/ngram.cnf
+#   Ubuntu / Debian                       : /etc/mysql/conf.d/ngram.cnf
+# 不确定就直接问 MySQL 自己吃哪个目录（Alinux 3 上会输出 !includedir /etc/my.cnf.d）：
+#   grep -i includedir /etc/my.cnf
+# 如果没有任何 includedir，就把下面 [mysqld] 两行直接追加到 /etc/my.cnf 末尾。
+#
+# 生效方式：
+#   sudo systemctl restart mysqld     # Ubuntu 上服务名是 mysql
+#   sudo systemctl restart material-show   # 必须重启后端：连接池里的旧连接不带新参数
+#
+# 注意：stopword 只对**新建**的 ngram 索引生效。如果索引是在改参数之前建的，
+# 需要重建索引（本项目全新部署不存在这个问题）。
+
+[mysqld]
+# 关掉停用词过滤，中文才能被 ngram 正常切分检索
+innodb_ft_enable_stopword=OFF
+
+# ngram 分词长度。默认就是 2，中文双字词召回最好；写出来只是防止被别的配置覆盖。
+# ⚠️ 必须与建索引时的取值一致（本项目索引按默认 2 建），改大会导致索引失效重建。
+ngram_token_size=2

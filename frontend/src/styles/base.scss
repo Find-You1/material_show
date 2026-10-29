@@ -1,0 +1,241 @@
+// ============================================================
+// 全局基础样式：CSS 自定义属性 + reset + 排版
+// 只在 main.js 里 import 一次。
+// ============================================================
+
+:root {
+  // ---- 与 tokens.scss 同源的运行时变量，供模板/内联样式使用 ----
+  --color-primary: #{$color-primary};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-primary-soft: #{$color-primary-soft};
+  --color-accent: #{$color-accent};
+  --color-text: #{$color-text};
+  --color-text-secondary: #{$color-text-secondary};
+  --color-text-muted: #{$color-text-muted};
+  --color-bg-page: #{$color-bg-page};
+  --color-bg-card: #{$color-bg-card};
+  --color-bg-hover: #{$color-bg-hover};
+  --color-bg-sunken: #{$color-bg-sunken};
+  --color-border: #{$color-border};
+  --color-border-strong: #{$color-border-strong};
+  --color-ink: #{$color-ink};
+  --color-ink-soft: #{$color-ink-soft};
+  --color-success: #{$color-success};
+  --color-warning: #{$color-warning};
+  --color-danger: #{$color-danger};
+
+  --navbar-height: #{$navbar-height};
+  --container-max: #{$container-max};
+  --radius-card: #{$radius-card};
+  --radius-base: #{$radius-base};
+  --radius-sm: #{$radius-sm};
+  --gap-grid: #{$gap-grid};
+
+  --shadow-card: #{$shadow-card};
+  --shadow-hover: #{$shadow-hover};
+  --shadow-navbar: #{$shadow-navbar};
+  --shadow-pop: #{$shadow-pop};
+  --color-glow: #{$color-glow};
+
+  --z-navbar: #{$z-navbar};
+  --z-overlay: #{$z-overlay};
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $font-sans;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text);
+  background-color: var(--color-bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// ---------- 全站环境底 ----------
+// Apple 式留白：页面本身就是一层近白，不再铺网格与光晕。
+// 唯一的一层极淡顶光，只为让大面积白不至于「死板」。
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 420px);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure {
+  margin: 0;
+}
+
+// 标题统一收紧字距：大字号的默认字距偏松，收紧一点更「苹果」
+h1 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-primary);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+// 键盘聚焦：统一细描边环，鼠标点击不触发
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background: rgba(0, 113, 227, 0.18);
+  color: var(--color-text);
+}
+
+// 滚动条：细、浅，只在 hover 时加深一档
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d2d2d7;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b5b5bb;
+  background-clip: content-box;
+}
+
+// 页面容器：全站统一左右留白与最大宽度
+.page-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 24px;
+
+  @include respond($bp-md) {
+    padding-inline: 16px;
+  }
+}
+
+// 页面主标题区（左对齐，避免头重脚轻）
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @include respond($bp-sm) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+.page-head__title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.14;
+  color: var(--color-text);
+}
+
+.page-head__desc {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+// ---------- 路由转场（<Transition name="neon">） ----------
+// Apple 式切换：只做极短的淡入 + 轻微上浮，不做 3D 翻转，避免抢内容。
+.neon-enter-active,
+.neon-leave-active {
+  transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: opacity, transform;
+}
+
+.neon-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.neon-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+// 尊重系统「减少动态效果」：退化为纯淡入
+@media (prefers-reduced-motion: reduce) {
+  .neon-enter-active,
+  .neon-leave-active {
+    transition: opacity 0.12s ease;
+  }
+
+  .neon-enter-from,
+  .neon-leave-to {
+    opacity: 0;
+    transform: none;
+  }
+}

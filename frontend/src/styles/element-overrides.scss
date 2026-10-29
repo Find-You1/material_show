@@ -1,0 +1,190 @@
+// ============================================================
+// Element Plus 主题覆盖（CSS 变量层，零构建负担）
+//
+// 选择器写成 `:root:root` 是刻意为之：Element Plus 按需引入时，各组件的
+// style/css 会在运行时被后插入 <style>，其中自带的 :root 变量声明会盖掉
+// 先加载的覆盖文件（同特异性、后者胜）。把特异性抬到 0,2,0 后与加载顺序
+// 无关，永远生效。
+//
+// 颜色统一从 tokens.scss 取值，保证和自定义组件是同一套色。
+// 色板：Apple 浅色（近白底 + 石墨文字 + 苹果蓝）。
+// ============================================================
+
+:root:root {
+  // ---------- 主色（苹果蓝）----------
+  --el-color-primary: #{$color-primary};
+  --el-color-primary-light-3: #3d8ee8;
+  --el-color-primary-light-5: #80b8f1;
+  --el-color-primary-light-7: #c2dcf8;
+  --el-color-primary-light-8: #dbecfc;
+  --el-color-primary-light-9: #{$color-primary-soft};
+  --el-color-primary-dark-2: #{$color-primary-dark};
+
+  // ---------- 文本 ----------
+  --el-text-color-primary: #{$color-text};
+  --el-text-color-regular: #424245;
+  --el-text-color-secondary: #{$color-text-secondary};
+  --el-text-color-placeholder: #a1a1a6;
+  --el-text-color-disabled: #c7c7cc;
+
+  // ---------- 边框 ----------
+  --el-border-color: #{$color-border};
+  --el-border-color-light: #ececf0;
+  --el-border-color-lighter: #f2f2f5;
+  --el-border-color-extra-light: #f7f7f9;
+  --el-border-color-hover: #{$color-border-strong};
+  --el-border-color-darker: #{$color-border-strong};
+
+  // ---------- 填充 ----------
+  --el-fill-color: #{$color-bg-hover};
+  --el-fill-color-light: #fafafc;
+  --el-fill-color-lighter: #fcfcfd;
+  --el-fill-color-extra-light: #fdfdfd;
+  --el-fill-color-dark: #eaeaef;
+  --el-fill-color-darker: #dedee4;
+  --el-fill-color-blank: #{$color-bg-card};
+
+  // ---------- 背景 ----------
+  --el-bg-color: #{$color-bg-card};
+  --el-bg-color-page: #{$color-bg-page};
+  --el-bg-color-overlay: #ffffff;
+
+  // ---------- 禁用态 ----------
+  --el-disabled-bg-color: #{$color-bg-hover};
+  --el-disabled-text-color: #c7c7cc;
+  --el-disabled-border-color: #{$color-border};
+
+  // ---------- 遮罩 ----------
+  --el-mask-color: rgba(0, 0, 0, 0.32);
+  --el-mask-color-extra-light: rgba(0, 0, 0, 0.12);
+
+  // ---------- 圆角：Apple 式大圆角 ----------
+  --el-border-radius-base: #{$radius-base};
+  --el-border-radius-small: #{$radius-sm};
+  --el-border-radius-round: 980px;
+
+  // ---------- 字号/控件：整体放大一档，留出呼吸感 ----------
+  --el-font-size-base: 14px;
+  --el-font-size-small: 12px;
+  --el-font-size-large: 16px;
+  --el-component-size: 38px;
+  --el-component-size-small: 30px;
+  --el-component-size-large: 46px;
+
+  // ---------- 语义色 ----------
+  --el-color-success: #{$color-success};
+  --el-color-warning: #{$color-warning};
+  --el-color-danger: #{$color-danger};
+  --el-color-error: #{$color-danger};
+  --el-color-info: #{$color-info};
+
+  // ---------- 阴影：浅底用极淡的多层投影 ----------
+  --el-box-shadow-light: #{$shadow-card};
+  --el-box-shadow: #{$shadow-pop};
+  --el-box-shadow-dark: #{$shadow-pop};
+}
+
+// 表单控件：大圆角 + 更柔和的悬停边框
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  border-radius: var(--el-border-radius-base);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+// 按钮：Apple 胶囊形，中等字重，不做彩色外发光
+.el-button {
+  --el-button-font-weight: 500;
+  border-radius: 980px;
+  letter-spacing: -0.01em;
+}
+
+.el-button--primary:not(.is-disabled) {
+  box-shadow: none;
+
+  &:hover {
+    background: #0077ed;
+  }
+}
+
+.el-button.is-link,
+.el-button.is-text {
+  box-shadow: none;
+}
+
+// 链接色跟随主色，避免 Element 默认蓝与站内色调不一致
+.el-link.el-link--primary {
+  --el-link-text-color: #{$color-primary};
+}
+
+// 后台是数据密集型界面：表格降噪，保证正文对比度
+.el-table {
+  --el-table-bg-color: #{$color-bg-card};
+  --el-table-tr-bg-color: #{$color-bg-card};
+  --el-table-border-color: #{$color-border};
+  --el-table-header-bg-color: #{$color-bg-page};
+  --el-table-header-text-color: #{$color-text-secondary};
+  --el-table-text-color: #{$color-text};
+  --el-table-row-hover-bg-color: #{$color-bg-hover};
+  font-size: 13px;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600;
+}
+
+// 弹窗/抽屉/菜单统一圆角与阴影
+.el-dialog {
+  border-radius: #{$radius-card};
+  box-shadow: var(--el-box-shadow);
+}
+
+.el-dialog__header {
+  margin-right: 0;
+  padding: 22px 24px 0;
+}
+
+.el-dialog__body {
+  padding: 18px 24px 22px;
+}
+
+.el-dialog__footer {
+  padding: 0 24px 22px;
+}
+
+.el-message {
+  border-radius: #{$radius-base};
+  box-shadow: #{$shadow-pop};
+}
+
+.el-popper,
+.el-dropdown__popper,
+.el-select__popper {
+  border-radius: #{$radius-base} !important;
+}
+
+.el-card {
+  border-radius: #{$radius-card};
+}
+
+.el-dropdown-menu {
+  padding: 6px;
+}
+
+.el-dropdown-menu__item {
+  border-radius: $radius-sm;
+}
+
+.el-tag {
+  border-radius: 980px;
+}
+
+// 分页紧凑
+.el-pagination {
+  --el-pagination-font-size: 13px;
+  --el-pagination-button-height: 32px;
+  --el-pagination-bg-color: transparent;
+  --el-pagination-text-color: #{$color-text-secondary};
+  --el-pagination-button-disabled-color: #{$color-text-muted};
+  justify-content: center;
+}
